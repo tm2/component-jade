@@ -30,11 +30,25 @@ module.exports = function (builder) {
 
 function compileJade (pkg, callback) {
   // Grab our Jade templates.
-  if (!pkg.config.templates) return callback();
-  var files = pkg.config.templates.filter(filterJade);
+  console.log("compiling folder");
+  if (!(pkg.config.templates || pkg.config.templateFolders)) return callback();
+   
+  var files = [];
+  if (pkg.config.templates)
+    files = pkg.config.templates.filter(filterJade);
+ 
+  var folders = pkg.config.templateFolders;
+
+  folders.forEach(function(folder) {
+    var templates = fs.readdirSync(pkg.path(folder), "*.jade");
+    templates.forEach(function(f) {
+      files.push(path.join(folder, f));
+    })
+  });
 
   files.forEach(function (file) {
     debug('compiling: %s', pkg.path(file));
+    debug('jading: %s', pkg.path(file));
 
     var fullPath = pkg.path(file);
 
