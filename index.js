@@ -30,7 +30,6 @@ module.exports = function (builder) {
 
 function compileJade (pkg, callback) {
   // Grab our Jade templates.
-  console.log("compiling folder");
   if (!(pkg.config.templates || pkg.config.templateFolders)) return callback();
    
   var files = [];
@@ -57,6 +56,7 @@ function compileJade (pkg, callback) {
       , fn     = jade.compile(string, { client: true, compileDebug: false, filename: fullPath });
 
     // Add our new compiled version to the package, with the same name.
+    file = file.replace(/\\/g ,"/")
     file = file.slice(0, file.length - 5) + '.js';
     pkg.addFile('scripts', file, 'module.exports = ' + fn);
   });
